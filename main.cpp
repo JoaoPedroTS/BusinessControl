@@ -8,17 +8,21 @@
 // size_T id_generator(size_t id);
 
 // bool cadastrarCliente();
- bool cadastrarItem(vector<Item> &listaItem, string n, double p);
+bool cadastrarItem(vector<Item> &listaItem, string n, double p);
 
-// bool updateDadoCli();
-// bool updateDadoIt();
+// buscar substring no vector;
+bool searchSubstring(/*const*/ vector<Item> &listaItem, string substr);
+//bool searchSubstring(*const*/ vector<Cliente> &listaCliente, string substr);
+
+// bool updateDadoCli(vector<Cliente> &listaCliente, size_t id);
+bool updateDadoIt(vector<Item> &listaItem, size_t id);
 
 // bool removerCliente();
 // bool removerItem();
 
-//bool saveDbClient(const vector<Clientes> &listClients);
-bool saveDbItem(const vector<Item> &listItems, string n, double p);
-//bool saveDbPedidos(const vector<Item> &listItems);
+//bool saveDbClient(const vector<Clientes> &listaCliente);
+bool saveDbItem(const vector<Item> &listaItem, string n, double p);
+//bool saveDbPedidos(const vector<Item> &listaPedido);
 
 
 main(){
@@ -76,21 +80,31 @@ main(){
 				if(deuBom){
 					cout << "Item cadastrado" << endl;
 					for(size_t i =0; i < listItems.size(); i++){
-						cout << "Item " << listItems.at(i).get_nome() << endl;
-						cout << "Item " << listItems.at(i).get_id() << endl;
+						listItems.at(i).show_info();
 					}
+				}else{
+					cout << "Item nao foi cadastrado" << endl;
 				}
-				//Em casos em que o objeto for instanciado com o construtor:
-				// 1 - O valor do id sera 0, o valor do nome sera " " e o valor do valor sera 0
-				// 2 - O valor do id sera 0,o valor do nome sera o nome passado por argumentos, e o valor do valor sera o valor passado por argumento;
-				// 3 - O valor do id sera o valor do id passado por argumento, o valor do nome será o nome passado por argumentos e o valor do valor sera o passsado por argumentos;
 			}
 			if (opt == '2'){
-				cout << "Atualizar: " << endl;
-				cout << "2 - Nome" << endl;
-				cout << "3 - Valor" << endl;
+				cout << "Digite o nome do item que voce deseja atualizar: " << endl;
+				string substr;
+				cin >> substr;
+				
+				bool deuBom;
+				deuBom = searchSubstring(listItems,substr);
+				
+				if (deuBom){
+					cout << "Qual item deseja atualizar? Digite o Id" << endl;
+					size_t id;
+					cin >> id;
+					updateDadoIt(listItems, id);
+				}else{
+					cout << "Item nao encontrado! Verifique o nome do produto" << endl;
+				}
+				
 				//Ideia é usar uma substring para buscar e depois remover conforme as opções que aparecerem;
-				cin >> opt;
+				//cin >> opt;
 				if(opt == '1'){
 					//updateDadoIt();
 				}
@@ -258,3 +272,70 @@ bool cadastrarItem(vector<Item> &listaItem, string n, double p){
 	}
 	return deuBom;
 };
+
+bool searchSubstring(/*const*/ vector<Item> &listaItem, string substr){
+
+	bool hasfound = false;
+
+	for (size_t i = 0; i < listaItem.size(); i++){
+		
+		//for (size_t j = 0; j < listaItem.at(i).size(); j++){
+		
+			string word = listaItem.at(i).get_nome(); //.at(j);
+			size_t possub = word.find(substr);
+			
+			if (possub < word.length()){
+				//cout << filename.at(i) << " has word: " << word << endl;
+				cout << "Informacoes do Item:" << endl;
+				listaItem.at(i).show_info();
+				hasfound = true;
+			}
+		//}
+	}
+	return hasfound;
+}
+
+bool updateDadoIt(vector<Item> &listaItem, size_t id){
+	
+	bool deuBom = false;
+	size_t i = 0;
+	
+	while(listaItem.at(i).get_id() != id){
+		i++;
+	}
+	
+	cout << "Atualizar:" << endl;
+	cout << "1- Nome" << endl;
+	cout << "2- Id" << endl;
+	cout << "3- Valor" << endl;
+	char opt;
+	cin >> opt;
+	
+	//for(;;){}
+	if(opt == '1'){
+		cout << "digite o novo nome" << endl;
+		string nome_temp;
+		cin >> nome_temp;
+		//verifica se já existe o nome
+		listaItem.at(i).set_nome(nome_temp);
+		deuBom = true;
+	} else if (opt == '2'){
+		cout << "digite o novo id" << endl;
+		size_t id_temp;
+		cin >> id_temp;
+		//verifica se já existe o id
+		listaItem.at(i).set_id(id_temp);
+		deuBom = true;
+	} else if (opt == '3'){
+		cout << "digite o novo valor" << endl;
+		double valor_temp;
+		cin >> valor_temp;
+		//verifica se já existe o valor
+		listaItem.at(i).set_valor(valor_temp);
+		deuBom = true;
+	} else {
+		cout << "Opcao invalida" << endl;
+	}
+	
+	return deuBom;
+}
