@@ -19,9 +19,6 @@ Cliente::Cliente(string nome, string funcao) : Cliente(){
 }
 
 void Cliente::GetInfo(){
-    cout << "Informe o id do cliente que deseja consultar" << endl;
-    size_t tempId;
-    cin >> tempId;
     cout << "id: " << m_id << endl;
     cout << "Nome: " << m_nome << endl;
     cout << "Função: " << m_funcao << endl;
@@ -37,6 +34,16 @@ string Cliente::GetNome(){
 
 string Cliente::GetFuncao(){
     return m_funcao;
+}
+
+void Cliente::UpdateId(size_t id){
+    m_id = id;
+}
+void Cliente::UpdateNome(string nome){
+    m_nome = nome;
+}
+void Cliente::UpdateFuncao(string funcao){
+    m_funcao = funcao;
 }
 
 Cliente::~Cliente(){

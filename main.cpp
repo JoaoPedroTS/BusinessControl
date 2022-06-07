@@ -13,8 +13,12 @@ bool cadastrarItem(vector<Item> &listaItem, string n, double p);
 // bool updateDadoCli();
 // bool updateDadoIt();
 
+bool searchClient(vector<Cliente> &ClientList, string substr);
+
 // bool removerCliente();
 // bool removerItem();
+
+bool updateDadoCli(vector<Cliente> &ClientList, size_t id); 
 
 //bool saveDbClient(const vector<Clientes> &listClients);
 bool saveDbItem(const vector<Item> &listItems, string n, double p);
@@ -33,7 +37,7 @@ int main(){
 		
 		cout << "-----------------------------" << endl;
 		cout << "Sistema de Gestao de Negocios" << endl;
-		cout << "1 - Cadastrar Cliente" << endl;
+		cout << "1 - Menu Cliente" << endl;
 		cout << "2 - Cadastrar Item" << endl;
 		cout << "3 - Lancar Pedido" << endl;
 		cout << "4 - Emite relatorio" << endl;
@@ -59,29 +63,26 @@ int main(){
 				conf = cadastrarCliente(ClientList, tempNome, tempFuncao);
 
 				if(conf){
-					cout << "Cliente cadastrado!" << endl;
-					cout << "Lista atualizada: " << endl;
-					for (size_t i = 0; i < ClientList.size(); i++){
-						cout << "id: " << ClientList.at(i).GetId() << endl
-							<< "nome: " << ClientList.at(i).GetNome() << endl
-							<< "Função: " << ClientList.at(i).GetFuncao() << endl
-							<< "-------------" << endl;
-					}
-					
+					cout << " " << endl;
+					cout << "Cliente cadastrado!" << endl;					
 				}
 			}
 			if (opt == '2'){
-				cout << "Atualizar" << endl;
-				cout << "1 - Nome" << endl;
-				cout << "2 - Função" << endl;
-				cin >> opt;
-				if(opt == '1'){
-					//SetNome
-				}
-				if (opt == '2'){
-					//Setfuncao
-				}
-				
+				cout << "Digite o nome do cliente que deseja atualizar" << endl;
+				string substr;
+				cin >> substr;
+
+				bool conf;
+				conf = searchClient(ClientList, substr);
+
+				if (conf){
+					cout << "Informe o id do cliente que deseja atualizar" << endl;
+					size_t tempId;
+					cin >> tempId;
+					updateDadoCli(ClientList, tempId);
+				} else {
+					cout << "Cliente não encontrado! Verifique o nome do cliente" << endl;
+				}				
 			}
 			
 			continue;
@@ -159,48 +160,45 @@ int main(){
 			}
 			
 			continue;
-		}
+		}  */
 		
 		if (opt == '4'){
 			cout << "Relatorios" << endl;
+			cout << "1 - Exibir lista de clientes" << endl;
+			cout << "2 - " << endl;
+			cout << "3 - " << endl;
+			cout << "4 - " << endl;
 			
 			cin >> opt;
 			
 			if ( opt == '1'){
-				
-			
+				for (size_t i = 0; i < ClientList.size(); i++){
+					cout << "id: " << ClientList.at(i).GetId() << endl
+						<< "nome: " << ClientList.at(i).GetNome() << endl
+						<< "Função: " << ClientList.at(i).GetFuncao() << endl
+						<< "-------------" << endl;
+				}
+			} 
+			/*
+			if (opt == '2'){				
 			}
-			if (opt == '2'){
-				
+			if ( opt == '3'){			
 			}
-			if ( opt == '3'){
-				
-			
+			if (opt == '4'){				
 			}
-			if (opt == '4'){
-				
-			}
-			if ( opt == '5'){
-				
-			
-			}
-			
+			if ( opt == '5'){		
+			}  */			
 			
 			continue;
-		} */
+		}
 		
 		if (opt == '5'){
 			cout << "Salvar dados" << endl;
 			
 			break;
-		}
-		
-		
-		
+		}			
 	}
-
-	return(0);
-	 
+	return(0);	 
 }
 
 /*
@@ -314,3 +312,69 @@ bool cadastrarCliente(vector<Cliente> &ClientList, string n, string f){
 	}
 	return conf;
 };
+
+bool searchClient(vector<Cliente> &ClientList, string substr){
+
+	bool conf = false;
+
+	for (size_t i = 0; i < ClientList.size(); i++){
+		
+		//for (size_t j = 0; j < ClientList.at(i).size(); j++){
+		
+			string word = ClientList.at(i).GetNome(); //.at(j);
+			size_t possub = word.find(substr);
+			
+			if (possub < word.length()){
+				//cout << filename.at(i) << " has word: " << word << endl;
+				cout << "Informacoes do cliente:" << endl;
+				ClientList.at(i).GetInfo();
+				conf = true;
+			}
+		//}
+	}
+	return conf;
+}
+
+bool updateDadoCli(vector<Cliente> &ClientList, size_t id){
+	bool conf = false;
+	size_t i = 0;
+
+	while (ClientList.at(i).GetId() != id){
+		i++;
+	}
+
+	cout << "Qual informação deseja atualizar" << endl;
+	cout << "1- Nome" << endl;
+	cout << "2- Id" << endl;
+	cout << "3- Função" << endl;
+	char opt;
+	cin >> opt;
+
+	if (opt == '1'){
+		cout << "Digite o novo nome" << endl;
+		string tempNome;
+		cin >> tempNome;
+
+		ClientList.at(i).UpdateNome(tempNome);
+		conf = true;
+	} else if (opt == '2'){
+		cout << "Digite o novo id" << endl;
+		size_t tempId;
+		cin >> tempId;
+
+		ClientList.at(i).UpdateId(tempId);
+		conf = true;
+	} else if (opt == '3'){
+		cout << "Digite a nova função" << endl;
+		string tempFuncao;
+		cin >> tempFuncao;
+
+		ClientList.at(i).UpdateFuncao(tempFuncao);
+		conf = true;
+	} else {
+	cout << "Opção invalida" << endl;
+
+	}
+
+	return conf;	
+}

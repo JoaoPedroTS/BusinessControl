@@ -21,9 +21,9 @@ public:
     string GetFuncao();
 
     //Sets
-    void UpdateId();
-    void UpdateNome();
-    void updateFuncao();
+    void UpdateId(size_t id);
+    void UpdateNome(string nome);
+    void UpdateFuncao(string funcao);
 
     static size_t m_clientQuantity;
 };
