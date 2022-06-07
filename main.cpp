@@ -1,4 +1,4 @@
-//#include "cliente.hpp"
+#include "cliente.hpp"
 #include "item.hpp"
 #include <vector>
 #include <iostream>
@@ -7,8 +7,8 @@
 // size_t id_generator();
 // size_T id_generator(size_t id);
 
-// bool cadastrarCliente();
- bool cadastrarItem(vector<Item> &listaItem, string n, double p);
+bool cadastrarCliente(vector<Cliente> &ClientList, string n, string f);
+bool cadastrarItem(vector<Item> &listaItem, string n, double p);
 
 // bool updateDadoCli();
 // bool updateDadoIt();
@@ -21,9 +21,10 @@ bool saveDbItem(const vector<Item> &listItems, string n, double p);
 //bool saveDbPedidos(const vector<Item> &listItems);
 
 
-main(){
+int main(){
 	
 	//vector<Cliente> listClients;
+	vector<Cliente> ClientList;
 	vector<Item> listItems;
 	//vector<vector<pair<Cliente,Item>>> listPedidos;
 	
@@ -44,14 +45,44 @@ main(){
 		if (opt == '1'){ // Joao Pedro - Cliente
 			cout << "1 - Cadastrar novo cliente" << endl;
 			cout << "2 - Atualizar dado de cliente" << endl;
-			/*cin >> opt;
+			cin >> opt;
 			
-			if ( opt == "1"){
+			if (opt == '1'){
+				cout << "insira o nome do novo cliente" << endl;
+				string tempNome;
+				cin >> tempNome;
+				cout << "Insira a função desse novo cliente" << endl;
+				string tempFuncao;
+				cin >> tempFuncao;
+
+				bool conf;
+				conf = cadastrarCliente(ClientList, tempNome, tempFuncao);
+
+				if(conf){
+					cout << "Cliente cadastrado!" << endl;
+					cout << "Lista atualizada: " << endl;
+					for (size_t i = 0; i < ClientList.size(); i++){
+						cout << "id: " << ClientList.at(i).GetId() << endl
+							<< "nome: " << ClientList.at(i).GetNome() << endl
+							<< "Função: " << ClientList.at(i).GetFuncao() << endl
+							<< "-------------" << endl;
+					}
+					
+				}
+			}
+			if (opt == '2'){
+				cout << "Atualizar" << endl;
+				cout << "1 - Nome" << endl;
+				cout << "2 - Função" << endl;
+				cin >> opt;
+				if(opt == '1'){
+					//SetNome
+				}
+				if (opt == '2'){
+					//Setfuncao
+				}
 				
 			}
-			if (opt == "2"){
-
-			}*/
 			
 			continue;
 		}
@@ -257,4 +288,29 @@ bool cadastrarItem(vector<Item> &listaItem, string n, double p){
 		deuBom = true;
 	}
 	return deuBom;
+};
+
+bool cadastrarCliente(vector<Cliente> &ClientList, string n, string f){
+	bool conf = false;
+
+	//Verifica tamanho do vetor
+	if (ClientList.empty()){
+		Cliente tempClient(n, f);
+		ClientList.push_back(tempClient);
+		conf = true;
+	}
+	else{
+		//Verifica se o item já foi cadastrado
+		for (size_t i = 0; i < ClientList.size(); i++){
+			if(ClientList.at(i).GetNome() == n){
+				cout << "Cliente já foi cadastrado" << endl;
+				return conf;
+			}
+		}
+		//Realiza o push_back
+		Cliente tempClient(n, f);
+		ClientList.push_back(tempClient);
+		conf = true;
+	}
+	return conf;
 };
