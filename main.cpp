@@ -21,11 +21,11 @@ bool updateDadoIt(vector<Item> &listaItem, size_t id);
 bool updateDadoCli(vector<Cliente> &ClientList, size_t id); 
 
 //Remover
-bool removeItem(vector<Item> &listaItem, size_t id);
-bool removeCliente(vector<Cliente> &ClientList, size_t id);
+bool removeItem(vector<Item> &listaItem, vector<Pedido> &listaPedido, size_t id);
+bool removeCliente(vector<Cliente> &ClientList, vector<Pedido> &listaPedido, size_t id);
 
 //Verifica uso
-//bool checkUse( vector<Pedido> listaPedido, size_t id, size_t tipo);
+bool checkUse(vector<Pedido> &listaPedido, size_t id, size_t tipo);
 
 //SalvaDB
 bool saveDbClient(vector<Cliente> &ClientList);
@@ -119,7 +119,7 @@ main(){
 					cout << "Qual cliente deseja remover? Digite o Id" << endl;
 					size_t id;
 					cin >> id;
-					conf = removeCliente(ClientList, id);
+					conf = removeCliente(ClientList, listPedidos, id);
 					if(conf){
 						cout << "Cliente removido!" << endl;
 					} else {
@@ -196,7 +196,7 @@ main(){
 					cout << "Qual item deseja remover? Digite o Id" << endl;
 					size_t id;
 					cin >> id;
-					deuBom = removeItem(listItems, id);
+					deuBom = removeItem(listItems, listPedidos, id);
 					if(deuBom){
 						cout << "Item removido!" << endl;
 					} else {
@@ -650,7 +650,7 @@ bool updateDadoIt(vector<Item> &listaItem, size_t id){
 	return deuBom;
 }
 
-bool removeCliente(vector<Cliente> &ClientList, size_t id){
+bool removeCliente(vector<Cliente> &ClientList, vector<Pedido> &listaPedido, size_t id){
 	
 	bool deuBom = false;
 	bool idExiste = false;
@@ -667,10 +667,15 @@ bool removeCliente(vector<Cliente> &ClientList, size_t id){
 	}
 
 	if(idExiste){
-		//verifica se possui algum pedido com aquele item
-		// função que retorna uma booleana checkUse()
-		ClientList.erase(ClientList.begin() + i);
-		deuBom = true;
+		bool used;
+		// verifica se possui algum pedido com aquele cliente - função que retorna uma booleana checkUse()
+		used = checkUse(listaPedido, id, 0);
+		if(!used){
+			ClientList.erase(ClientList.begin() + i);
+			deuBom = true;
+		} else{
+			cout << "Cliente nao pode ser removido pois esta em um pedido" << endl;
+		}
 	} else{
 		cout << "Id inexistente" << endl;
 	}
@@ -679,7 +684,7 @@ bool removeCliente(vector<Cliente> &ClientList, size_t id){
 	
 }
 
-bool removeItem(vector<Item> &listaItem, size_t id){
+bool removeItem(vector<Item> &listaItem, vector<Pedido> &listaPedido, size_t id){
 	
 	bool deuBom = false;
 	bool idExiste = false;
@@ -696,10 +701,15 @@ bool removeItem(vector<Item> &listaItem, size_t id){
 	}
 
 	if(idExiste){
-		//verifica se possui algum pedido com aquele item
-		// função que retorna uma booleana checkUse()
-		listaItem.erase(listaItem.begin() + i);
-		deuBom = true;
+		bool used;
+		// verifica se possui algum pedido com aquele item - função que retorna uma booleana checkUse()
+		used = checkUse(listaPedido, id, 1);
+		if(!used){
+			listaItem.erase(listaItem.begin() + i);
+			deuBom = true;
+		} else{
+			cout << "Item nao pode ser removido pois esta em um pedido" << endl;
+		}
 	} else{
 		cout << "Id inexistente" << endl;
 	}
@@ -731,4 +741,27 @@ void pedCadastrados(vector<Pedido> &listaPedido){
 	for(size_t i = 0; i < listaPedido.size(); i++){
 		cout << "Id: " << listaPedido.at(i).get_id() << " - Valor: " << listaPedido.at(i).get_item().get_valor() << endl;
 	}
+}
+
+bool checkUse(vector<Pedido> &listaPedido, size_t id, size_t tipo){
+	
+	bool used = false;
+	
+	if(tipo == 0){ //Cliente
+		for(size_t i = 0; i < listaPedido.size(); i++){
+			if(listaPedido.at(i).get_cliente().get_id() == id){
+				used = true;
+				break;
+			}
+		}
+	} else if (tipo == 1){ //Item
+		for(size_t i = 0; i < listaPedido.size(); i++){
+			if(listaPedido.at(i).get_item().get_id() == id){
+				used = true;
+				break;
+			}
+		}
+	} 
+	
+	return used;
 }
