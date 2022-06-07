@@ -18,31 +18,31 @@ Cliente::Cliente(string nome, string funcao) : Cliente(){
     m_funcao = funcao;
 }
 
-void Cliente::GetInfo(){
+void Cliente::show_info(){
 	cout << "Nome: " << m_nome << endl;
     cout << "id: " << m_id << endl;
     cout << "Funcao: " << m_funcao << endl;
 }
 
-size_t Cliente::GetId(){
+size_t Cliente::get_id(){
     return m_id;
 }
 
-string Cliente::GetNome(){
+string Cliente::get_nome(){
     return m_nome;
 }
 
-string Cliente::GetFuncao(){
+string Cliente::get_funcao(){
     return m_funcao;
 }
 
-void Cliente::UpdateId(size_t id){
+void Cliente::set_id(size_t id){
     m_id = id;
 }
-void Cliente::UpdateNome(string nome){
+void Cliente::set_nome(string nome){
     m_nome = nome;
 }
-void Cliente::UpdateFuncao(string funcao){
+void Cliente::set_funcao(string funcao){
     m_funcao = funcao;
 }
 

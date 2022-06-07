@@ -15,15 +15,16 @@ public:
     ~Cliente();
 
     //Gets
-    void GetInfo();
-    size_t GetId();
-    string GetNome();
-    string GetFuncao();
+    size_t get_id();
+    string get_nome();
+    string get_funcao();
 
     //Sets
-    void UpdateId(size_t id);
-    void UpdateNome(string nome);
-    void UpdateFuncao(string funcao);
+    void set_id(size_t id);
+    void set_nome(string nome);
+    void set_funcao(string funcao);
 
+	//Necessidades do Objeto:
+	void show_info();
     static size_t m_clientQuantity;
 };

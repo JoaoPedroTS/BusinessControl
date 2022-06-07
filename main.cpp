@@ -1,14 +1,16 @@
-#include "cliente.hpp"
-#include "item.hpp"
+//#include "cliente.hpp"
+//#include "item.hpp"
+#include "pedido.hpp"
+//Verificar onde já foram usados emchecar a necessidade de incluir novamente
 #include <vector>
 #include <iostream>
 #include <fstream>
-//#include "pedido.hpp"
+
 
 //Cadastrar
 bool cadastrarCliente(vector<Cliente> &ClientList, string n, string f);
 bool cadastrarItem(vector<Item> &listaItem, string n, double p);
-// cadastrarPedido();
+bool cadastrarPedido(vector<Pedido> &listaPedido, vector<Cliente> &ClientList, vector<Item> &listaItem,  size_t id_cli, size_t id_it);
 
 //Buscar substring no vector;
 bool searchSubstring(vector<Item> &listaItem, string substr);
@@ -28,19 +30,19 @@ bool removeCliente(vector<Cliente> &ClientList, size_t id);
 //SalvaDB
 bool saveDbClient(vector<Cliente> &ClientList);
 bool saveDbItem(vector<Item> &listaItem);
-//bool saveDbPedidos(const vector<Item> &listaPedido);
+bool saveDbPedido(vector<Pedido> &listaPedido);
 
 //Relatorios
 void itCadastrados(vector<Item> &listaItem);
-//void cliCadastrados();
-//void pedCadastrados(vector<Pedidos> &listaPedido);
+void cliCadastrados(vector<Cliente> &ClientList);
+void pedCadastrados(vector<Pedido> &listaPedido);
 
 
 main(){
 	
 	vector<Cliente> ClientList;
 	vector<Item> listItems;
-	//vector<Pedidos> listPedidos;
+	vector<Pedido> listPedidos;
 	
 	for(;;){
 		
@@ -49,7 +51,7 @@ main(){
 		cout << "Sistema de Gestao de Negocios" << endl;
 		cout << "1 - Gerir Cliente" << endl;
 		cout << "2 - Gerir Item" << endl;
-		cout << "3 - Lancar Pedido" << endl;
+		cout << "3 - Gerir Pedido" << endl;
 		cout << "4 - Emite relatorio" << endl;
 		cout << "5 - Sair e salvar dados no BD" << endl;
 		cout << "-----------------------------" << endl;
@@ -206,32 +208,51 @@ main(){
 			}
 			
 			continue;
-		}/*
+		}
 		if (opt == '3'){
-			cout << "1 - Pedido" << endl;
+			cout << "-----------------------------" << endl;
+			cout << "1 - Lancar Pedido" << endl;
 			cout << "2 - Corrigir pedido" << endl;
 			cout << "3 - Buscar Pedido" << endl;
 			cout << "4 - Recibo" << endl;
+			cout << "-----------------------------" << endl;
 			
 			cin >> opt;
 			
-			if ( opt == '1'){
+			if (opt == '1'){
+				cout << "Escolha um cliente. Digite o Id" << endl;
+				cliCadastrados(ClientList);
+				size_t id_cli_temp;
+				cin >> id_cli_temp;
 				
-			
+				cout << "Escolha um item. Digite o Id" << endl;
+				itCadastrados(listItems);
+				size_t id_it_temp;
+				cin >> id_it_temp;
+				
+				bool deuBom;
+				deuBom = cadastrarPedido(listPedidos, ClientList, listItems, id_cli_temp, id_it_temp);
+				
+				if(deuBom){
+					cout << "Pedido cadastrado com sucesso" << endl;
+				} else {
+					cout << "Pedido nao foi cadastrado" << endl;
+				}
+				
+				
 			}
 			if (opt == '2'){
-				
+				cout << "Não implementado" << endl;
 			}
-			if ( opt == '3'){
-				
-			
+			if (opt == '3'){
+				cout << "Não implementado" << endl;
 			}
 			if (opt == '4'){
-				
+				cout << "Não implementado" << endl;
 			}
 			
 			continue;
-		}*/	
+		}
 		if (opt == '4'){
 			cout << "Relatorios" << endl;
 			cout << "--------------------------------------------" << endl;
@@ -247,6 +268,8 @@ main(){
 			if ( opt == '1'){
 				cout << "Cadastro de Itens:" << endl;
 				itCadastrados(listItems);
+				cout << "Cadastro de Clientes:" << endl;
+				cliCadastrados(ClientList);
 			
 			}
 			if (opt == '2'){
@@ -261,14 +284,13 @@ main(){
 			}
 			if ( opt == '3'){
 				cout << "Pedidos - Valores" << endl;
-				//pedCadastrados(listPedidos);
+				pedCadastrados(listPedidos);
 			}
 			if (opt == '4'){
-				
+				cout << "Não implementado" << endl;
 			}
 			if ( opt == '5'){
-				
-			
+				cout << "Não implementado" << endl;
 			}
 			
 			
@@ -277,12 +299,13 @@ main(){
 		
 		if (opt == '5'){
 			cout << "Salvar dados" << endl;
-			bool deuBomIt, deuBomCli;
+			bool deuBomIt, deuBomCli, deuBomPed;
 
 			deuBomIt = saveDbItem(listItems);
 			deuBomCli = saveDbClient(ClientList);
+			deuBomPed = saveDbPedido(listPedidos);
 			
-			if (deuBomIt == true && deuBomCli == true){
+			if (deuBomIt == true && deuBomCli == true && deuBomPed == true){
 				cout << "Dados salvos com sucesso" << endl;
 			} else {
 				cout << "Itens não foram salvos" << endl;
@@ -312,16 +335,15 @@ bool saveDbClient(vector<Cliente> &ClientList){
 
 	for (size_t i = 0; i <ClientList.size(); i++){
 		
-		fileWriter1 << ClientList.at(i).GetNome() << endl;
-		fileWriter1 << ClientList.at(i).GetId() << endl;
-		fileWriter1 << ClientList.at(i).GetFuncao() << endl;
+		fileWriter1 << ClientList.at(i).get_nome() << endl;
+		fileWriter1 << ClientList.at(i).get_id() << endl;
+		fileWriter1 << ClientList.at(i).get_funcao() << endl;
 		
 	}
 	
 	fileWriter1.close();
 
 	return true;
-
 }
 
 bool saveDbItem(vector<Item> &listaItem){
@@ -336,7 +358,6 @@ bool saveDbItem(vector<Item> &listaItem){
 
 	for (size_t i = 0; i <listaItem.size(); i++){
 		
-		//fileWriter2 << "Item: " << listaItem.at(i).get_nome() << " Id: " << listaItem.at(i).get_id() << " Valor: " << listaItem.at(i).get_valor() << endl;
 		fileWriter2 << listaItem.at(i).get_nome() << endl;
 		fileWriter2 << listaItem.at(i).get_id() << endl;
 		fileWriter2 << listaItem.at(i).get_valor() << endl;
@@ -347,28 +368,27 @@ bool saveDbItem(vector<Item> &listaItem){
 
 	return true;
 }
-/*
-bool saveDbPedidos(const vector<vector<pair<size_t, Itenm>>> &listPedidos){)
-	ofstream fileWriter3("Pedidos.txt");
+
+bool saveDbPedido(vector<Pedido> &listaPedido){
+	
+	string filename = "Pedidos.txt";
+	ofstream fileWriter3(filename);
 	
 	if (fileWriter3.is_open() == false){
 		cout << "Erro" << endl;
 		return false;
 	}
 
-	for (size_t i = 0; i <listClients.size(); i++){
-		
-		fileWriter2 << listClients.at(i);
-		
+	for (size_t i = 0; i <listaPedido.size(); i++){
+		fileWriter3 << listaPedido.at(i).get_id() << endl;
+		fileWriter3 << listaPedido.at(i).get_item().get_valor() << endl;
 	}
-	
+
 	fileWriter3.close();	
-	
+
 	return true;
-	
 }
 
-*/
 bool cadastrarCliente(vector<Cliente> &ClientList, string n, string f){
 	bool conf = false;
 
@@ -381,7 +401,7 @@ bool cadastrarCliente(vector<Cliente> &ClientList, string n, string f){
 	else{
 		//Verifica se o item já foi cadastrado
 		for (size_t i = 0; i < ClientList.size(); i++){
-			if(ClientList.at(i).GetNome() == n){
+			if(ClientList.at(i).get_nome() == n){
 				cout << "Cliente ja cadastrado" << endl;
 				return conf;
 			}
@@ -419,17 +439,66 @@ bool cadastrarItem(vector<Item> &listaItem, string n, double p){
 	return deuBom;
 };
 
+bool cadastrarPedido(vector<Pedido> &listaPedido, vector<Cliente> &ClientList, vector<Item> &listaItem,  size_t id_cli, size_t id_it){
+	
+	bool deuBom = false;
+	bool id_cliExis = false;
+	bool id_itExis = false;
+	size_t i = 0, j = 0, k = 0;
+	
+	while(i < ClientList.size()){
+		
+		if(ClientList.at(i).get_id() == id_cli){
+			id_cliExis = true;
+			break;
+		} else{
+			i++;
+		}
+	}
+	
+	while(j < listaItem.size()){
+		
+		if(listaItem.at(j).get_id() == id_it){
+			id_itExis = true;
+			break;
+		} else{
+			j++;
+		}
+	}
+	
+	if(id_cliExis == true && id_itExis == true){
+		
+		Pedido pedido_temp(ClientList.at(i), listaItem.at(j));
+		listaPedido.push_back(pedido_temp);
+		deuBom = true;
+		
+		/*verifica o tamanho do vetor
+		if (listaPedido.empty()){
+			Pedido pedido_temp(ClientList.at(i), listaItem.at(j));
+			listaPedido.push_back(pedido_temp);
+			deuBom = true;
+		}else{
+			cout << "Ainda nao implementado" << endl;
+		}*/
+	} else{
+		cout << "Verifique os ids informados" << endl;
+	}
+	
+	
+	return deuBom;
+}
+
 bool searchSubstring(vector<Cliente> &ClientList, string substr){
 
 	bool hasfound = false;
 
 	for (size_t i = 0; i < ClientList.size(); i++){
 		
-			string word = ClientList.at(i).GetNome();
+			string word = ClientList.at(i).get_nome();
 			size_t possub = word.find(substr);
 			
 			if (possub < word.length()){
-				ClientList.at(i).GetInfo();
+				ClientList.at(i).show_info();
 				hasfound = true;
 			}
 	}
@@ -461,7 +530,7 @@ bool updateDadoCli(vector<Cliente> &ClientList, size_t id){
 
 	while(i < ClientList.size()){
 		
-		if(ClientList.at(i).GetId() == id){
+		if(ClientList.at(i).get_id() == id){
 			idExiste = true;
 			break;
 		} else{
@@ -483,11 +552,11 @@ bool updateDadoCli(vector<Cliente> &ClientList, size_t id){
 			cin >> nome_temp;
 			//verifica se já existe o nome pois não podem existir dois nomes de iten iguais
 			for (size_t j =0; j < ClientList.size(); j++){
-				if (ClientList.at(j).GetNome() == nome_temp){
+				if (ClientList.at(j).get_nome() == nome_temp){
 					return deuBom;
 				}
 			}
-			ClientList.at(i).UpdateNome(nome_temp);
+			ClientList.at(i).set_nome(nome_temp);
 			deuBom = true;
 		} else if (opt == '2'){
 			cout << "digite o novo id" << endl;
@@ -495,17 +564,17 @@ bool updateDadoCli(vector<Cliente> &ClientList, size_t id){
 			cin >> id_temp;
 			//verifica se já existe o id pois nao podem existir dois ids de item iguais
 			for (size_t j =0; j < ClientList.size(); j++){
-				if (ClientList.at(j).GetId() == id_temp){
+				if (ClientList.at(j).get_id() == id_temp){
 					return deuBom;
 				}
 			}
-			ClientList.at(i).UpdateId(id_temp);
+			ClientList.at(i).set_id(id_temp);
 			deuBom = true;
 		} else if (opt == '3'){
 			cout << "Digite a nova funcao" << endl;
 			string tempFuncao;
 			cin >> tempFuncao;
-			ClientList.at(i).UpdateFuncao(tempFuncao);
+			ClientList.at(i).set_funcao(tempFuncao);
 			deuBom = true;
 		} else {
 			cout << "Opcao invalida" << endl;
@@ -589,7 +658,7 @@ bool removeCliente(vector<Cliente> &ClientList, size_t id){
 	
 	while(i < ClientList.size()){
 		
-		if(ClientList.at(i).GetId() == id){
+		if(ClientList.at(i).get_id() == id){
 			idExiste = true;
 			break;
 		} else{
@@ -639,8 +708,17 @@ bool removeItem(vector<Item> &listaItem, size_t id){
 	
 }
 
-void itCadastrados(vector<Item> &listaItem){
+void cliCadastrados(vector<Cliente> &ClientList){
+	//verifica se o vetor está vazio
+	cout << "Cliente - Id - Funcao" << endl;
+	for(size_t i = 0; i < ClientList.size(); i++){
+		cout << ClientList.at(i).get_nome() << " - " << ClientList.at(i).get_id() << " - " << ClientList.at(i).get_funcao() << endl;
+	}
 	
+}
+
+void itCadastrados(vector<Item> &listaItem){
+	//verifica se o vetor está vazio
 	cout << "Item - Id - Valor" << endl;
 	for(size_t i = 0; i < listaItem.size(); i++){
 		cout << listaItem.at(i).get_nome() << " - " << listaItem.at(i).get_id() << " - " << listaItem.at(i).get_valor() << endl;
@@ -648,11 +726,9 @@ void itCadastrados(vector<Item> &listaItem){
 	
 }
 
-/*
-void pedCadastrados(vector<Pedidos> &listaPedido){
-	cout << "Pedido - Valor" << endl;
+void pedCadastrados(vector<Pedido> &listaPedido){
+	//verifica se o vetor está vazio
 	for(size_t i = 0; i < listaPedido.size(); i++){
-		cout << listaPedido.at(i).get_id() << " - " << listaPedido.at(i).get_m_item().get_valor() << endl;
+		cout << "Id: " << listaPedido.at(i).get_id() << " - Valor: " << listaPedido.at(i).get_item().get_valor() << endl;
 	}
-};
-*/
+}
