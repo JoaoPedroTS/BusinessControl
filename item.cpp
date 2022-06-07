@@ -20,6 +20,7 @@ Item::Item(string nome, double valor) : Item(){
 
 Item::Item(size_t id, string nome, double valor) : Item(){
 
+	m_id = id;
 	m_nome = nome;
 	m_valor = valor;
 
@@ -50,8 +51,7 @@ void Item::set_valor(double valor){
 }
 
 void Item::show_info(){
-	cout << "Item: " << m_nome << endl;
-	cout << "Id: " << m_id << " Valor: " << m_valor << endl;
+	cout << "Item: " << m_nome << " Id: " << m_id << " Valor: " << m_valor << endl;
 };
 
 Item::~Item(){};

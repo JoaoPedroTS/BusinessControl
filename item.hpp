@@ -34,8 +34,6 @@ class Item{
 		void set_valor(double valor);
 		
 		//Necessidades do Objeto:
-		//Atualizar();
-		//Remover();
 		void show_info();
 		static size_t m_globalquantity;
 

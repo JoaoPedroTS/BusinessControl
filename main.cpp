@@ -2,42 +2,52 @@
 #include "item.hpp"
 #include <vector>
 #include <iostream>
+#include <fstream>
 //#include "pedido.hpp"
 
-// size_t id_generator();
-// size_T id_generator(size_t id);
-
+//Cadastrar
 // bool cadastrarCliente();
 bool cadastrarItem(vector<Item> &listaItem, string n, double p);
 
-// buscar substring no vector;
-bool searchSubstring(/*const*/ vector<Item> &listaItem, string substr);
-//bool searchSubstring(*const*/ vector<Cliente> &listaCliente, string substr);
+//Buscar substring no vector;
+bool searchSubstring(vector<Item> &listaItem, string substr);
+//bool searchSubstring(vector<Cliente> &listaCliente, string substr);
 
+//Atualizar
 // bool updateDadoCli(vector<Cliente> &listaCliente, size_t id);
 bool updateDadoIt(vector<Item> &listaItem, size_t id);
 
-// bool removerCliente();
-// bool removerItem();
+//Remover
+bool removeItem(vector<Item> &listaItem, size_t id);
+// bool removeCliente();
 
+//Verifica uso
+//bool checkUse( vector<Pedido> listaPedido, size_t id, size_t tipo);
+
+//SalvaDB
 //bool saveDbClient(const vector<Clientes> &listaCliente);
-bool saveDbItem(const vector<Item> &listaItem, string n, double p);
+bool saveDbItem(vector<Item> &listaItem);
 //bool saveDbPedidos(const vector<Item> &listaPedido);
+
+//Relatorios
+void itCadastrados(vector<Item> &listaItem);
+//void cliCadastrados();
+void pedCadastrados(vector<Pedidos> &listaPedido);
 
 
 main(){
 	
 	//vector<Cliente> listClients;
 	vector<Item> listItems;
-	//vector<vector<pair<Cliente,Item>>> listPedidos;
+	vector<Pedidos> listPedidos;
 	
 	for(;;){
 		
 		
 		cout << "-----------------------------" << endl;
 		cout << "Sistema de Gestao de Negocios" << endl;
-		cout << "1 - Cadastrar Cliente" << endl;
-		cout << "2 - Cadastrar Item" << endl;
+		cout << "1 - Gerir Cliente" << endl;
+		cout << "2 - Gerir Item" << endl;
 		cout << "3 - Lancar Pedido" << endl;
 		cout << "4 - Emite relatorio" << endl;
 		cout << "5 - Sair e salvar dados no BD" << endl;
@@ -61,14 +71,17 @@ main(){
 		}
 		if (opt == '2'){ // Samady Corrêa - Item
 			cout << "-----------------------------" << endl;
-			cout << "1 - Cadastrar item novo" << endl;
-			cout << "2 - Atualizar dado de item" << endl;
+			cout << "1 - Cadastrar item " << endl;
+			cout << "2 - Atualizar item" << endl;
+			cout << "3 - Remover item " << endl;
 			cout << "-----------------------------" << endl;
 			cin >> opt;
 			
 			if ( opt == '1'){
 				cout << "Insira o nome do Item" << endl;
 				string nome_temp;
+				//cin >> nome_temp;
+				getline(cin, nome_temp);
 				cin >> nome_temp;
 				cout << "Insira o preco do Item" << endl;
 				double preco_temp;
@@ -79,9 +92,6 @@ main(){
 				
 				if(deuBom){
 					cout << "Item cadastrado" << endl;
-					for(size_t i =0; i < listItems.size(); i++){
-						listItems.at(i).show_info();
-					}
 				}else{
 					cout << "Item nao foi cadastrado" << endl;
 				}
@@ -98,21 +108,39 @@ main(){
 					cout << "Qual item deseja atualizar? Digite o Id" << endl;
 					size_t id;
 					cin >> id;
-					updateDadoIt(listItems, id);
+					deuBom = updateDadoIt(listItems, id);
+					
+					if(deuBom){
+						cout << "Item atualizado" << endl;
+					} else {
+						cout << "Item nao foi atualizado" << endl;
+					}
+					
 				}else{
 					cout << "Item nao encontrado! Verifique o nome do produto" << endl;
 				}
+			}
+			
+			if (opt == '3'){
+				cout << "Digite o nome do item que voce deseja remover: " << endl;
+				string substr;
+				cin >> substr;
 				
-				//Ideia é usar uma substring para buscar e depois remover conforme as opções que aparecerem;
-				//cin >> opt;
-				if(opt == '1'){
-					//updateDadoIt();
-				}
-				if(opt == '2'){
-					//updateDadoIt();
-				}
-				if(opt == '3'){
-					//updateDadoIt();
+				bool deuBom;
+				deuBom = searchSubstring(listItems,substr);
+				
+				if (deuBom){
+					cout << "Qual item deseja remover? Digite o Id" << endl;
+					size_t id;
+					cin >> id;
+					deuBom = removeItem(listItems, id);
+					if(deuBom){
+						cout << "Item removido!" << endl;
+					} else {
+						cout << "Item nao pode ser removido" << endl;
+					}
+				}else{
+					cout << "Item nao encontrado! Verifique o nome do produto" << endl;
 				}
 			}
 			
@@ -142,23 +170,37 @@ main(){
 			}
 			
 			continue;
-		}
-		
+		}*/	
 		if (opt == '4'){
 			cout << "Relatorios" << endl;
+			cout << "--------------------------------------------" << endl;
+			cout << "1 - Relatorio de Cadastro de Item e Clientes" << endl;
+			cout << "2 - Relatorio de Substrings de Itens" << endl;
+			cout << "3 - Relatorio de Pedidos vs Valores" << endl;
+			cout << "4 - Relatorio de Vendas por Cliente" << endl; //ordem alfabetica por cliente
+			cout << "5 - Relatorio de Vendas por Item" << endl; // ordem alfabetica e por valores decrescentes
+			cout << "--------------------------------------------" << endl;
 			
 			cin >> opt;
 			
 			if ( opt == '1'){
-				
+				cout << "Cadastro de Itens:" << endl;
+				itCadastrados(listItems);
 			
 			}
 			if (opt == '2'){
+				cout << "Substrings" << endl;
+				cout << "Informe a substring que deseja procurar:" << endl;
+				string substr;
+				cin >> substr;
+				
+				bool deuBom;
+				deuBom = searchSubstring(listItems,substr);
 				
 			}
 			if ( opt == '3'){
-				
-			
+				cout << "Pedidos - Valores" << endl;
+				pedCadastrados(listPedidos);
 			}
 			if (opt == '4'){
 				
@@ -170,10 +212,19 @@ main(){
 			
 			
 			continue;
-		} */
+		}
 		
 		if (opt == '5'){
 			cout << "Salvar dados" << endl;
+			bool deuBom;
+
+			deuBom = saveDbItem(listItems);
+			
+			if (deuBom){
+				cout << "Itens salvos com sucesso" << endl;
+			} else {
+				cout << "Itens não foram salvos" << endl;
+			}
 			
 			break;
 		}
@@ -207,18 +258,23 @@ bool saveDbClients(const vector<Clientes> &listClients){
 	return true;
 
 }
-bool saveDbItens(const vector<Item> &listItems){
+*/
+bool saveDbItem(vector<Item> &listaItem){
 	
-	ofstream fileWriter2("Itens.txt");
+	string filename = "Itens.txt";
+	ofstream fileWriter2(filename);
 	
 	if (fileWriter2.is_open() == false){
 		cout << "Erro" << endl;
 		return false;
 	}
 
-	for (size_t i = 0; i <listClients.size(); i++){
+	for (size_t i = 0; i <listaItem.size(); i++){
 		
-		fileWriter2 << listClients.at(i);
+		//fileWriter2 << "Item: " << listaItem.at(i).get_nome() << " Id: " << listaItem.at(i).get_id() << " Valor: " << listaItem.at(i).get_valor() << endl;
+		fileWriter2 << listaItem.at(i).get_nome() << endl;
+		fileWriter2 << listaItem.at(i).get_id() << endl;
+		fileWriter2 << listaItem.at(i).get_valor() << endl;
 		
 	}
 	
@@ -226,6 +282,7 @@ bool saveDbItens(const vector<Item> &listItems){
 
 	return true;
 }
+/*
 bool saveDbPedidos(const vector<vector<pair<size_t, Itenm>>> &listPedidos){)
 	ofstream fileWriter3("Pedidos.txt");
 	
@@ -273,24 +330,20 @@ bool cadastrarItem(vector<Item> &listaItem, string n, double p){
 	return deuBom;
 };
 
-bool searchSubstring(/*const*/ vector<Item> &listaItem, string substr){
+bool searchSubstring(vector<Item> &listaItem, string substr){
 
 	bool hasfound = false;
 
 	for (size_t i = 0; i < listaItem.size(); i++){
 		
-		//for (size_t j = 0; j < listaItem.at(i).size(); j++){
-		
-			string word = listaItem.at(i).get_nome(); //.at(j);
+			string word = listaItem.at(i).get_nome();
 			size_t possub = word.find(substr);
 			
 			if (possub < word.length()){
-				//cout << filename.at(i) << " has word: " << word << endl;
-				cout << "Informacoes do Item:" << endl;
+				//cout << "Informacoes do Item:" << endl;
 				listaItem.at(i).show_info();
 				hasfound = true;
 			}
-		//}
 	}
 	return hasfound;
 }
@@ -298,44 +351,109 @@ bool searchSubstring(/*const*/ vector<Item> &listaItem, string substr){
 bool updateDadoIt(vector<Item> &listaItem, size_t id){
 	
 	bool deuBom = false;
+	bool idExiste = false;
 	size_t i = 0;
-	
-	while(listaItem.at(i).get_id() != id){
-		i++;
+
+	while(i < listaItem.size()){
+		
+		if(listaItem.at(i).get_id() == id){
+			idExiste = true;
+			break;
+		} else{
+			i++;
+		}
 	}
 	
-	cout << "Atualizar:" << endl;
-	cout << "1- Nome" << endl;
-	cout << "2- Id" << endl;
-	cout << "3- Valor" << endl;
-	char opt;
-	cin >> opt;
-	
-	//for(;;){}
-	if(opt == '1'){
-		cout << "digite o novo nome" << endl;
-		string nome_temp;
-		cin >> nome_temp;
-		//verifica se já existe o nome
-		listaItem.at(i).set_nome(nome_temp);
-		deuBom = true;
-	} else if (opt == '2'){
-		cout << "digite o novo id" << endl;
-		size_t id_temp;
-		cin >> id_temp;
-		//verifica se já existe o id
-		listaItem.at(i).set_id(id_temp);
-		deuBom = true;
-	} else if (opt == '3'){
-		cout << "digite o novo valor" << endl;
-		double valor_temp;
-		cin >> valor_temp;
-		//verifica se já existe o valor
-		listaItem.at(i).set_valor(valor_temp);
-		deuBom = true;
+	if (idExiste){
+		cout << "Atualizar:" << endl;
+		cout << "1- Nome" << endl;
+		cout << "2- Id" << endl;
+		cout << "3- Valor" << endl;
+		char opt;
+		cin >> opt;
+		
+		if(opt == '1'){
+			cout << "digite o novo nome" << endl;
+			string nome_temp;
+			cin >> nome_temp;
+			//verifica se já existe o nome pois não podem existir dois nomes de iten iguais
+			for (size_t j =0; j < listaItem.size(); j++){
+				if (listaItem.at(j).get_nome() == nome_temp){
+					return deuBom;
+				}
+			}
+			listaItem.at(i).set_nome(nome_temp);
+			deuBom = true;
+		} else if (opt == '2'){
+			cout << "digite o novo id" << endl;
+			size_t id_temp;
+			cin >> id_temp;
+			//verifica se já existe o id pois nao podem existir dois ids de item iguais
+			for (size_t j =0; j < listaItem.size(); j++){
+				if (listaItem.at(j).get_id() == id_temp){
+					return deuBom;
+				}
+			}
+			listaItem.at(i).set_id(id_temp);
+			deuBom = true;
+		} else if (opt == '3'){
+			cout << "digite o novo valor" << endl;
+			double valor_temp;
+			cin >> valor_temp;
+			listaItem.at(i).set_valor(valor_temp);
+			deuBom = true;
+		} else {
+			cout << "Opcao invalida" << endl;
+		}
 	} else {
-		cout << "Opcao invalida" << endl;
+		cout << "Id inexistente" << endl;
 	}
 	
 	return deuBom;
 }
+
+bool removeItem(vector<Item> &listaItem, size_t id){
+	
+	bool deuBom = false;
+	bool idExiste = false;
+	size_t i = 0;
+	
+	while(i < listaItem.size()){
+		
+		if(listaItem.at(i).get_id() == id){
+			idExiste = true;
+			break;
+		} else{
+			i++;
+		}
+	}
+
+	if(idExiste){
+		//verifica se possui algum pedido com aquele item
+		// função que retorna uma booleana checkUse()
+		listaItem.erase(listaItem.begin() + i);
+		deuBom = true;
+	} else{
+		cout << "Id inexistente" << endl;
+	}
+	
+	return deuBom;
+	
+}
+
+void itCadastrados(vector<Item> &listaItem){
+	
+	cout << "Item - Id - Valor" << endl;
+	for(size_t i = 0; i < listaItem.size(); i++){
+		cout << listaItem.at(i).get_nome() << " - " << listaItem.at(i).get_id() << " - " << listaItem.at(i).get_valor() << endl;
+	}
+	
+}
+
+
+void pedCadastrados(vector<Pedidos> &listaPedido){
+	cout << "Pedido - Valor" << endl;
+	for(size_t i = 0; i < listaPedido.size(); i++){
+		cout << listaPedido.at(i).get_id() << " - " << listaPedido.at(i).get_m_item().get_valor() << endl;
+	}
+};
