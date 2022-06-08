@@ -5,6 +5,11 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+//Adicionados para ordenar o vetor conforme a necessidade
+#include <algorithm>
+#include <unordered_set>
+
+using namespace std;
 
 
 //Cadastrar
@@ -36,6 +41,7 @@ bool saveDbPedido(vector<Pedido> &listaPedido);
 void itCadastrados(vector<Item> &listaItem);
 void cliCadastrados(vector<Cliente> &ClientList);
 void pedCadastrados(vector<Pedido> &listaPedido);
+void sortClients(vector<Pedido> &listaPedido);
 
 
 main(){
@@ -212,9 +218,6 @@ main(){
 		if (opt == '3'){
 			cout << "-----------------------------" << endl;
 			cout << "1 - Lancar Pedido" << endl;
-			cout << "2 - Corrigir pedido" << endl;
-			cout << "3 - Buscar Pedido" << endl;
-			cout << "4 - Recibo" << endl;
 			cout << "-----------------------------" << endl;
 			
 			cin >> opt;
@@ -241,16 +244,6 @@ main(){
 				
 				
 			}
-			if (opt == '2'){
-				cout << "Não implementado" << endl;
-			}
-			if (opt == '3'){
-				cout << "Não implementado" << endl;
-			}
-			if (opt == '4'){
-				cout << "Não implementado" << endl;
-			}
-			
 			continue;
 		}
 		if (opt == '4'){
@@ -287,7 +280,8 @@ main(){
 				pedCadastrados(listPedidos);
 			}
 			if (opt == '4'){
-				cout << "Não implementado" << endl;
+				cout << "Relatorio de Vendas por Cliente em Ordem Alfabetica" << endl;
+				sortClients(listPedidos);
 			}
 			if ( opt == '5'){
 				cout << "Não implementado" << endl;
@@ -756,4 +750,35 @@ bool checkUse(vector<Pedido> &listaPedido, size_t id, size_t tipo){
 	} 
 	
 	return used;
+}
+
+void sortClients(vector<Pedido> &listaPedido){
+	
+	vector<string> cliSorted;
+	
+	for(size_t i = 0; i < listaPedido.size(); i++){
+		cliSorted.push_back(listaPedido.at(i).get_cliente().get_nome());
+	}
+	
+	unordered_set<string> s(cliSorted.begin(), cliSorted.end()); // remove os itens duplicados do vetor auxiliar e armazena na estrutura de dado unorder_set
+    cliSorted.assign(s.begin(), s.end()); // reatribui os valores sem os itens duplicados ao vetor auxiliar
+	
+	sort(cliSorted.begin(), cliSorted.end()); // Ordena os valores do vetor auxiliar em ordem alfabetica
+	
+	for(size_t j = 0; j < cliSorted.size(); j++){ // Loop com vetor auxiliar que controla a ordem da impressao 
+		
+		cout << "Cliente: " << cliSorted.at(j) << endl;
+		
+		double valor_temp = 0;
+		size_t num_ped = 0;
+		
+		for(size_t k = 0; k < listaPedido.size(); k++){ // Loop com a lista de pedidos que é resposavel pelo calculo do numero de pedidos e do valor por cliente
+			if (cliSorted.at(j) == listaPedido.at(k).get_cliente().get_nome()){
+				num_ped += 1;
+				valor_temp += listaPedido.at(k).get_item().get_valor();
+			}
+		}
+		
+		cout << "Total de Pedidos: " << num_ped << " - Valor total dos Pedidos: " << valor_temp << endl;
+	}
 }
