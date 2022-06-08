@@ -472,14 +472,6 @@ bool cadastrarPedido(vector<Pedido> &listaPedido, vector<Cliente> &ClientList, v
 		listaPedido.push_back(pedido_temp);
 		deuBom = true;
 		
-		/*verifica o tamanho do vetor
-		if (listaPedido.empty()){
-			Pedido pedido_temp(ClientList.at(i), listaItem.at(j));
-			listaPedido.push_back(pedido_temp);
-			deuBom = true;
-		}else{
-			cout << "Ainda nao implementado" << endl;
-		}*/
 	} else{
 		cout << "Verifique os ids informados" << endl;
 	}

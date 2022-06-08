@@ -10,8 +10,6 @@ class Pedido{
 		Item m_item;
 		Cliente m_cliente;
 		//posso usar pair?
-		
-		
 	public:
 		//Constructor
 		Pedido();
