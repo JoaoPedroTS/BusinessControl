@@ -42,6 +42,7 @@ void itCadastrados(vector<Item> &listaItem);
 void cliCadastrados(vector<Cliente> &ClientList);
 void pedCadastrados(vector<Pedido> &listaPedido);
 void sortClients(vector<Pedido> &listaPedido);
+void sortItems(vector<Pedido> &listaPedido);
 
 
 main(){
@@ -284,7 +285,8 @@ main(){
 				sortClients(listPedidos);
 			}
 			if ( opt == '5'){
-				cout << "Não implementado" << endl;
+				cout << "Relatorio de Vendas por Item em Ordem Alfabetica" << endl;
+				sortItems(listPedidos);
 			}
 			
 			
@@ -781,4 +783,41 @@ void sortClients(vector<Pedido> &listaPedido){
 		
 		cout << "Total de Pedidos: " << num_ped << " - Valor total dos Pedidos: " << valor_temp << endl;
 	}
+}
+
+void sortItems(vector<Pedido> &listaPedido){
+
+	vector<string> itSorted;
+	//vector<pair<string, double>> itSorted;
+	//vector<double> valorSorted;
+	
+	for(size_t i = 0; i < listaPedido.size(); i++){
+		itSorted.push_back(listaPedido.at(i).get_item().get_nome());
+	}
+	
+	unordered_set<string> s(itSorted.begin(), itSorted.end());
+	itSorted.assign(s.begin(), s.end());
+	
+	sort(itSorted.begin(), itSorted.end());
+	
+	for(size_t j = 0; j < itSorted.size(); j++){
+		
+		cout << "Item: " << itSorted.at(j) << endl;
+		
+		double valor_temp = 0;
+		size_t num_ped = 0;
+		
+		for(size_t k = 0; k < listaPedido.size(); k++){
+			if(itSorted.at(j) == listaPedido.at(k).get_item().get_nome()){
+				num_ped += 1;
+				valor_temp += listaPedido.at(k).get_item().get_valor();
+			}
+		}
+		
+		
+		//valorSorted.push_back(valor_temp);
+		cout << "Total de Pedidos: " << num_ped << " - Valor total dos Pedidos: " << valor_temp << endl;
+	}
+	
+	
 }
