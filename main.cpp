@@ -37,17 +37,12 @@ bool saveDbClient(vector<Cliente> &ClientList);
 bool saveDbItem(vector<Item> &listaItem);
 bool saveDbPedido(vector<Pedido> &listaPedido);
 
-//CarregaDB
-bool LoadDbClient(string filename, vector<Cliente> &ClientList);
-bool LoadDbItem(string filename, vector<Item> &listaItem);
-bool LoadDbPedido(string filename, vector<Pedido> &listaPedido);
-
 //Relatorios
 void itCadastrados(vector<Item> &listaItem);
 void cliCadastrados(vector<Cliente> &ClientList);
 void pedCadastrados(vector<Pedido> &listaPedido);
 void sortClients(vector<Pedido> &listaPedido);
-void sortItem(vector<Pedido> &listaPedido);
+void sortItems(vector<Pedido> &listaPedido);
 
 
 int main(){
@@ -291,7 +286,7 @@ int main(){
 			}
 			if ( opt == '5'){
 				cout << "Relatorio de vendas por item" << endl;
-				sortItem(listPedidos);
+				sortItems(listPedidos);
 			}
 			
 			continue;
@@ -315,9 +310,7 @@ int main(){
 		}
 		
 	}
-
 	return(0);
-	 
 }
 
 bool saveDbClient(vector<Cliente> &ClientList){
@@ -385,31 +378,6 @@ bool saveDbPedido(vector<Pedido> &listaPedido){
 
 	return true;
 }
-
-/*
-bool LoadDbClient(string filename, vector<Cliente> &ClientList){
-	ifstream FileReader(filename);
-
-	if (FileReader.is_open() == false){
-		cout << "Erro ao abrir o arquivo" << endl;
-		return false;
-	}
-
-	string tmp;
-	while (getline(fileReader, tmp)){
-		ClientList.push_back(tmp);
-	}
-	
-	
-}
-bool LoadDbItem(string filename, vector<Item> &listaItem){
-
-}
-bool LoadDbPedido(string filename, vector<Pedido> &listaPedido){
-
-}
-*/
-
 
 bool cadastrarCliente(vector<Cliente> &ClientList, string n, string f){
 	bool conf = false;
@@ -811,33 +779,32 @@ void sortClients(vector<Pedido> &listaPedido){
 	}
 }
 
-void sortItem(vector<Pedido> &listaPedido){
-	
+void sortItems(vector<Pedido> &listaPedido){
+
 	vector<string> itSorted;
 	
 	for(size_t i = 0; i < listaPedido.size(); i++){
 		itSorted.push_back(listaPedido.at(i).get_item().get_nome());
 	}
 	
-	unordered_set<string> s(itSorted.begin(), itSorted.end()); // remove os itens duplicados do vetor auxiliar e armazena na estrutura de dado unorder_set
-    itSorted.assign(s.begin(), s.end()); // reatribui os valores sem os itens duplicados ao vetor auxiliar
+	unordered_set<string> s(itSorted.begin(), itSorted.end());
+	itSorted.assign(s.begin(), s.end());
 	
-	sort(itSorted.begin(), itSorted.end()); // Ordena os valores do vetor auxiliar em ordem alfabetica
+	sort(itSorted.begin(), itSorted.end());
 	
-	for(size_t j = 0; j < itSorted.size(); j++){ // Loop com vetor auxiliar que controla a ordem da impressao 
+	for(size_t j = 0; j < itSorted.size(); j++){
 		
 		cout << "Item: " << itSorted.at(j) << endl;
 		
 		double valor_temp = 0;
 		size_t num_ped = 0;
 		
-		for(size_t k = 0; k < listaPedido.size(); k++){ // Loop com a lista de pedidos que é resposavel pelo calculo do numero de pedidos e do valor por cliente
-			if (itSorted.at(j) == listaPedido.at(k).get_item().get_nome()){
+		for(size_t k = 0; k < listaPedido.size(); k++){
+			if(itSorted.at(j) == listaPedido.at(k).get_item().get_nome()){
 				num_ped += 1;
 				valor_temp += listaPedido.at(k).get_item().get_valor();
 			}
 		}
-		
 		cout << "Total de Pedidos: " << num_ped << " - Valor total dos Pedidos: " << valor_temp << endl;
 	}
 }
