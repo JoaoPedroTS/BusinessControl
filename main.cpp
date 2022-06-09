@@ -788,8 +788,6 @@ void sortClients(vector<Pedido> &listaPedido){
 void sortItems(vector<Pedido> &listaPedido){
 
 	vector<string> itSorted;
-	//vector<pair<string, double>> itSorted;
-	//vector<double> valorSorted;
 	
 	for(size_t i = 0; i < listaPedido.size(); i++){
 		itSorted.push_back(listaPedido.at(i).get_item().get_nome());
@@ -813,9 +811,7 @@ void sortItems(vector<Pedido> &listaPedido){
 				valor_temp += listaPedido.at(k).get_item().get_valor();
 			}
 		}
-		
-		
-		//valorSorted.push_back(valor_temp);
+
 		cout << "Total de Pedidos: " << num_ped << " - Valor total dos Pedidos: " << valor_temp << endl;
 	}
 	
