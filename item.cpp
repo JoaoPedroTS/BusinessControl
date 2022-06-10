@@ -15,7 +15,6 @@ Item::Item(string nome, double valor) : Item(){
 
 	m_nome = nome;
 	m_valor = valor;
-	
 }
 
 Item::Item(size_t id, string nome, double valor) : Item(){
@@ -23,7 +22,6 @@ Item::Item(size_t id, string nome, double valor) : Item(){
 	m_id = id;
 	m_nome = nome;
 	m_valor = valor;
-
 }
 
 size_t Item::get_id(){

@@ -1,3 +1,6 @@
+#ifndef CLIENTE_HPP
+#define CLIENTE_HPP
+
 #include <iostream>
 #include <string>
 
@@ -24,7 +27,10 @@ public:
     void set_nome(string nome);
     void set_funcao(string funcao);
 
-	//Necessidades do Objeto:
+	//Show info
 	void show_info();
+	//Id generator
     static size_t m_clientQuantity;
 };
+
+#endif

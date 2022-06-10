@@ -1,6 +1,3 @@
-#ifndef CLIENTE_HPP
-#define CLIENTE_HPP
-
 #include "cliente.hpp"
 
 size_t Cliente::m_clientQuantity = 0;
@@ -46,7 +43,4 @@ void Cliente::set_funcao(string funcao){
     m_funcao = funcao;
 }
 
-Cliente::~Cliente(){
-}
-
-#endif
+Cliente::~Cliente(){}

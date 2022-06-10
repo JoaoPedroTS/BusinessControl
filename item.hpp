@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <string>
-#include <vector>
 
 using namespace std;
 
@@ -33,8 +32,9 @@ class Item{
 		void set_nome(string nome);
 		void set_valor(double valor);
 		
-		//Necessidades do Objeto:
+		//Show info
 		void show_info();
+		//Id generator
 		static size_t m_globalquantity;
 
 };

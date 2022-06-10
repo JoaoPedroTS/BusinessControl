@@ -15,7 +15,6 @@ Pedido::Pedido(Cliente cli, Item it) : Pedido(){
 
 	m_item = it;
 	m_cliente = cli;
-	
 }
 
 Pedido::Pedido(size_t id, Cliente cli, Item it) : Pedido(){
@@ -23,7 +22,6 @@ Pedido::Pedido(size_t id, Cliente cli, Item it) : Pedido(){
 	m_id = id;
 	m_item = it;
 	m_cliente = cli;
-	
 }
 
 Pedido::~Pedido(){};

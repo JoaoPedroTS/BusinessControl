@@ -1,13 +1,8 @@
-//#include "cliente.hpp"
-//#include "item.hpp"
 #include "pedido.hpp"
-//Verificar onde já foram usados emchecar a necessidade de incluir novamente
 #include <vector>
-#include <iostream>
 #include <fstream>
-//Adicionados para ordenar o vetor conforme a necessidade
-#include <algorithm>
-#include <unordered_set>
+#include <algorithm> //Adicionado para ordenar o vetor conforme a necessidade
+#include <unordered_set> //Adicionado para ordenar o vetor conforme a necessidade
 
 using namespace std;
 
@@ -74,9 +69,10 @@ main(){
 			cin >> opt;
 			
 			if (opt == '1'){
-				cout << "insira o nome do novo cliente" << endl;
+				cout << "Insira o nome do novo cliente" << endl;
 				string tempNome;
 				cin >> tempNome;
+				
 				cout << "Insira a funcao desse novo cliente" << endl;
 				string tempFuncao;
 				cin >> tempFuncao;
@@ -150,9 +146,8 @@ main(){
 			if ( opt == '1'){
 				cout << "Insira o nome do Item" << endl;
 				string nome_temp;
-				//cin >> nome_temp;
-				getline(cin, nome_temp);
 				cin >> nome_temp;
+
 				cout << "Insira o preco do Item" << endl;
 				double preco_temp;
 				cin >> preco_temp;
@@ -216,7 +211,7 @@ main(){
 			
 			continue;
 		}
-		if (opt == '3'){
+		if (opt == '3'){ // Samady Corrêa - Pedido
 			cout << "-----------------------------" << endl;
 			cout << "1 - Lancar Pedido" << endl;
 			cout << "-----------------------------" << endl;
@@ -242,27 +237,23 @@ main(){
 				} else {
 					cout << "Pedido nao foi cadastrado" << endl;
 				}
-				
-				
 			}
 			continue;
 		}
-		if (opt == '4'){
+		if (opt == '4'){ // Samady Corrêa - Relatorios
 			cout << "Relatorios" << endl;
 			cout << "--------------------------------------------" << endl;
 			cout << "1 - Relatorio de Cadastro de Item e Clientes" << endl;
 			cout << "2 - Relatorio de Substrings de Itens" << endl;
 			cout << "3 - Relatorio de Pedidos vs Valores" << endl;
-			cout << "4 - Relatorio de Vendas por Cliente" << endl; //ordem alfabetica por cliente
-			cout << "5 - Relatorio de Vendas por Item" << endl; // ordem alfabetica e por valores decrescentes
+			cout << "4 - Relatorio de Vendas por Cliente" << endl;
+			cout << "5 - Relatorio de Vendas por Item" << endl;
 			cout << "--------------------------------------------" << endl;
 			
 			cin >> opt;
 			
 			if ( opt == '1'){
-				cout << "Cadastro de Itens:" << endl;
 				itCadastrados(listItems);
-				cout << "Cadastro de Clientes:" << endl;
 				cliCadastrados(ClientList);
 			
 			}
@@ -306,16 +297,10 @@ main(){
 			} else {
 				cout << "Itens não foram salvos" << endl;
 			}
-			
 			break;
 		}
-		
-		
-		
 	}
-
 	return(0);
-	 
 }
 
 
@@ -707,27 +692,39 @@ bool removeItem(vector<Item> &listaItem, vector<Pedido> &listaPedido, size_t id)
 }
 
 void cliCadastrados(vector<Cliente> &ClientList){
-	//verifica se o vetor está vazio
-	cout << "Cliente - Id - Funcao" << endl;
-	for(size_t i = 0; i < ClientList.size(); i++){
-		cout << ClientList.at(i).get_nome() << " - " << ClientList.at(i).get_id() << " - " << ClientList.at(i).get_funcao() << endl;
+
+	if(ClientList.empty()){
+		return;
+	} else{
+		cout << "Cadastro de Clientes:" << endl;
+		cout << "Cliente - Id - Funcao" << endl;
+		for(size_t i = 0; i < ClientList.size(); i++){
+			cout << ClientList.at(i).get_nome() << " - " << ClientList.at(i).get_id() << " - " << ClientList.at(i).get_funcao() << endl;
+		}
 	}
-	
 }
 
 void itCadastrados(vector<Item> &listaItem){
-	//verifica se o vetor está vazio
-	cout << "Item - Id - Valor" << endl;
-	for(size_t i = 0; i < listaItem.size(); i++){
-		cout << listaItem.at(i).get_nome() << " - " << listaItem.at(i).get_id() << " - " << listaItem.at(i).get_valor() << endl;
+
+	if(listaItem.empty()){
+		return;
+	} else{
+		cout << "Cadastro de Itens:" << endl;
+		cout << "Item - Id - Valor" << endl;
+		for(size_t i = 0; i < listaItem.size(); i++){
+			cout << listaItem.at(i).get_nome() << " - " << listaItem.at(i).get_id() << " - " << listaItem.at(i).get_valor() << endl;
+		}
 	}
-	
 }
 
 void pedCadastrados(vector<Pedido> &listaPedido){
-	//verifica se o vetor está vazio
-	for(size_t i = 0; i < listaPedido.size(); i++){
-		cout << "Id: " << listaPedido.at(i).get_id() << " - Valor: " << listaPedido.at(i).get_item().get_valor() << endl;
+
+	if(listaPedido.empty()){
+		return;
+	} else{
+		for(size_t i = 0; i < listaPedido.size(); i++){
+			cout << "Id: " << listaPedido.at(i).get_id() << " - Valor: " << listaPedido.at(i).get_item().get_valor() << endl;
+		}
 	}
 }
 
@@ -762,19 +759,19 @@ void sortClients(vector<Pedido> &listaPedido){
 		cliSorted.push_back(listaPedido.at(i).get_cliente().get_nome());
 	}
 	
-	unordered_set<string> s(cliSorted.begin(), cliSorted.end()); // remove os itens duplicados do vetor auxiliar e armazena na estrutura de dado unorder_set
-    cliSorted.assign(s.begin(), s.end()); // reatribui os valores sem os itens duplicados ao vetor auxiliar
+	unordered_set<string> s(cliSorted.begin(), cliSorted.end());
+    cliSorted.assign(s.begin(), s.end());
 	
-	sort(cliSorted.begin(), cliSorted.end()); // Ordena os valores do vetor auxiliar em ordem alfabetica
+	sort(cliSorted.begin(), cliSorted.end());
 	
-	for(size_t j = 0; j < cliSorted.size(); j++){ // Loop com vetor auxiliar que controla a ordem da impressao 
+	for(size_t j = 0; j < cliSorted.size(); j++){ 
 		
 		cout << "Cliente: " << cliSorted.at(j) << endl;
 		
 		double valor_temp = 0;
 		size_t num_ped = 0;
 		
-		for(size_t k = 0; k < listaPedido.size(); k++){ // Loop com a lista de pedidos que é resposavel pelo calculo do numero de pedidos e do valor por cliente
+		for(size_t k = 0; k < listaPedido.size(); k++){
 			if (cliSorted.at(j) == listaPedido.at(k).get_cliente().get_nome()){
 				num_ped += 1;
 				valor_temp += listaPedido.at(k).get_item().get_valor();
@@ -814,6 +811,4 @@ void sortItems(vector<Pedido> &listaPedido){
 
 		cout << "Total de Pedidos: " << num_ped << " - Valor total dos Pedidos: " << valor_temp << endl;
 	}
-	
-	
 }
